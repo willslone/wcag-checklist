@@ -154,7 +154,7 @@
     padding: 0.35rem 0.9rem;
     font-size: 0.83rem; font-family: var(--font); font-weight: 600;
     background: transparent; color: var(--brand);
-    border: 1.5px solid var(--brand-border);
+    border: 1.5px solid var(--brand);
     border-radius: var(--radius); cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
@@ -357,15 +357,24 @@
     a[href]::after { content: ""; }
   }
 
-  /* ── Responsive ─────────────────────────────────────────────────────────── */
-  @media (max-width: 640px) {
-    .btn-reset { width: 100%; }
-    .criterion-row { flex-wrap: wrap; }
-    .sc-link { display: none; }
+  /* ── Responsive (mobile-first) ──────────────────────────────────────────── */
+  .sc-link { display: none; }
+  .criterion-row { flex-wrap: wrap; }
+  .criterion-label { flex-basis: 100%; }
+  .progress-controls { flex-wrap: wrap; }
+  .progress-controls .toggle-label { flex-basis: 100%; }
+  .progress-controls .btn-reset { margin-top: 0.5rem; }
+
+  @media (min-width: 401px) {
+    .progress-controls { flex-wrap: nowrap; }
+    .progress-controls .toggle-label { flex-basis: auto; }
+    .progress-controls .btn-reset { margin-top: 0; }
+    .criterion-label { flex-basis: auto; }
   }
 
-  @media (max-width: 400px) {
-    .criterion-label { flex-basis: 100%; }
+  @media (min-width: 641px) {
+    .criterion-row { flex-wrap: nowrap; }
+    .sc-link { display: inline; }
   }
 </style>
 </head>
