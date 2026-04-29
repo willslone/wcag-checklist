@@ -236,12 +236,16 @@
 
   /* Understanding link */
   .sc-link {
-    font-size: 0.78rem; color: var(--brand); text-decoration: none;
-    white-space: nowrap; flex-shrink: 0;
-    border-bottom: 1px solid transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--brand); flex-shrink: 0;
+    width: 1.5rem; height: 1.5rem;
+    border-radius: 50%; border: 1px solid transparent;
+    text-decoration: none; transition: border-color 0.15s;
+    margin-left: auto;
   }
-  .sc-link:hover { border-bottom-color: var(--brand); }
-  .sc-link:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+  .sc-link:hover { border-color: var(--brand); }
+  .sc-link:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  .sc-link svg { display: block; }
 
   /* Obsolete note */
   .obs-note {
@@ -358,29 +362,27 @@
   }
 
   /* ── Responsive (mobile-first) ──────────────────────────────────────────── */
-  .sc-link { display: none; }
+  .badge { display: block; }
   .criterion-row { flex-wrap: wrap; }
   .criterion-label { flex-basis: 100%; }
   .progress-controls { flex-wrap: wrap; }
   .progress-controls .toggle-label { flex-basis: 100%; }
   .progress-controls .btn-reset { margin-top: 0.5rem; }
-
   .theme-switcher { flex-wrap: wrap; }
   .theme-label { flex-basis: 100%; }
 
   @media (min-width: 401px) {
-    .theme-switcher { flex-wrap: nowrap; }
-    .theme-label { flex-basis: auto; }
-  }
     .progress-controls { flex-wrap: nowrap; }
     .progress-controls .toggle-label { flex-basis: auto; }
     .progress-controls .btn-reset { margin-top: 0; }
     .criterion-label { flex-basis: auto; }
+    .theme-switcher { flex-wrap: nowrap; }
+    .theme-label { flex-basis: auto; }
   }
 
   @media (min-width: 641px) {
+    .badge { display: inline; }
     .criterion-row { flex-wrap: nowrap; }
-    .sc-link { display: inline; }
   }
 </style>
 </head>
@@ -624,7 +626,13 @@ function buildChecklist() {
         html += `<span class="sc-id">${c.id}</span>`;
         html += `<span class="sc-name">${c.name} <span class="badge badge--${c.level}">Level ${c.level}</span></span>`;
         html += `</label>`;
-        html += `<a class="sc-link" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Understanding ${c.id} ${c.name} (opens in new tab)">Understanding ↗</a>`;
+        html += `<a class="sc-link" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Understanding ${c.id} ${c.name} (opens in new tab)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="8" stroke-width="3"/>
+            <line x1="12" y1="12" x2="12" y2="16"/>
+          </svg>
+        </a>`;
         html += `</div>`;
 
         html += `</li>`;
