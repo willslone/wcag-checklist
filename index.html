@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WCAG 2.2 Level A/AA Audit Checklist</title>
+<script>
+(function() {
+  try {
+    var t = localStorage.getItem('theme') || 'system';
+    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.setAttribute('data-os',
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch(e) {}
+}());
+</script>
+<style>
+  /* ── Variables ─────────────────────────────────────────────────────────── */
+  :root {
+    --brand:        #1A5778;
+    --brand-dark:   #123D57;
+    --brand-light:  #E6F1F7;
+    --black:        #111111;
+    --gray-900:     #1E1E1E;
+    --gray-700:     #3D3D3D;
+    --gray-500:     #6B6B6B;
+    --gray-300:     #C4C4C4;
+    --gray-200:     #E8E8E8;
+    --gray-100:     #F4F4F4;
+    --white:        #FFFFFF;
+    --green:        #1A6638;
+    --green-light:  #EAF5EE;
+    --red:          #B40030;
+    --red-hover:    #8F0025;
+    --progress-border: #999999;  /* 3.2:1 on #F4F4F4 — passes non-text 3:1 */
+    --brand-border:    #4F90AF;  /* 3.1:1 on #F4F4F4 — passes non-text 3:1 */
+    --font:         "Avenir Next LT Pro", system-ui, sans-serif;
+    --mono:         "SF Mono", "Fira Code", "Consolas", monospace;
+    --max-width:    920px;
+    --radius:       4px;
+  }
+
+  /* ── Dark mode ──────────────────────────────────────────────────────────── */
+  [data-theme="dark"],
+  [data-theme="system"]:where([data-os="dark"]) {
+    --brand:       #6CB8E8;  /* ~9.4:1 on #111111 */
+    --brand-dark:  #6CB8E8;
+    --brand-light: #0A2535;
+    --black:       #EBEBEB;
+    --gray-900:    #CBCBCB;
+    --gray-700:    #AAAAAA;
+    --gray-500:    #888888;  /* 5.6:1 on #111111 — AA */
+    --gray-300:    #3A3A3A;
+    --gray-200:    #252525;
+    --gray-100:    #1A1A1A;
+    --white:       #111111;
+    --green:       #4DB876;  /* ~8.0:1 on #111111 */
+    --green-light: #0A1F13;
+    --red:         #FF6680;  /* ~8.5:1 on #111111 */
+    --red-hover:   #FF8FA3;
+    --progress-border: #666666;  /* 4.1:1 on #1A1A1A — passes non-text 3:1 */
+    --brand-border:    #3A7FA0;  /* 4.3:1 on #1A1A1A — passes non-text 3:1 */
+  }
+
+  /* ── Reset & Base ───────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--black);
+    background: var(--white);
+    padding: 0 1.25rem;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ── Layout ─────────────────────────────────────────────────────────────── */
+  .wrapper { max-width: var(--max-width); margin: 0 auto; }
+
+  /* ── Header ─────────────────────────────────────────────────────────────── */
+  .site-header {
+    border-bottom: 3px solid var(--brand);
+    padding: 2.5rem 0 2rem;
+    margin-bottom: 2rem;
+  }
+  .report-label {
+    display: block;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--brand); margin-bottom: 0.6rem;
+  }
+  .site-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 700; line-height: 1.2;
+    color: var(--black); margin-bottom: 1rem;
+  }
+  .meta-list {
+    list-style: none; display: flex; flex-wrap: wrap;
+    gap: 0.4rem 2rem; font-size: 0.875rem; color: var(--gray-700);
+  }
+  .meta-list strong { color: var(--black); }
+  .meta-list a { color: var(--brand); }
+
+  /* ── Progress ───────────────────────────────────────────────────────────── */
+  .progress-section {
+    background: var(--gray-100);
+    border-left: 4px solid var(--brand);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .progress-label {
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-700);
+  }
+  .progress-count { font-size: 0.875rem; font-weight: 600; color: var(--brand); }
+  .progress-track {
+    height: 9px; background: var(--white); border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--progress-border);
+  }
+  .progress-fill {
+    height: 100%; background: var(--brand); border-radius: 4px;
+    width: 0%; transition: width 0.3s ease;
+  }
+
+  /* ── Controls Bar ───────────────────────────────────────────────────────── */
+  .controls-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem;
+    padding: 0.875rem 1.25rem;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    margin-bottom: 2.5rem;
+  }
+  .progress-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 0.75rem;
+  }
+
+  /* Toggle */
+  .toggle-label {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.83rem; cursor: pointer; color: var(--gray-700);
+    white-space: nowrap; user-select: none;
+  }
+  .toggle-label input[type="checkbox"] { accent-color: var(--brand); cursor: pointer; }
+
+  .btn-reset {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.83rem; font-family: var(--font); font-weight: 600;
+    background: transparent; color: var(--brand);
+    border: 1.5px solid var(--brand-border);
+    border-radius: var(--radius); cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .btn-reset:hover { background: var(--brand); border-color: var(--brand); color: var(--white); }
+  .btn-reset:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+  /* ── Principle Section ──────────────────────────────────────────────────── */
+  .principle-section { margin-bottom: 3rem; }
+  .principle-header { border-bottom: 3px solid var(--brand); padding-bottom: 0.5rem; margin-bottom: 1.75rem; }
+  .principle-number {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--brand); margin-bottom: 0.2rem;
+  }
+  .principle-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--black); }
+
+  /* ── Guideline Section ──────────────────────────────────────────────────── */
+  .guideline-section { margin-bottom: 2rem; }
+  .guideline-header { margin-bottom: 0.625rem; }
+  .guideline-id { font-size: 0.75rem; font-weight: 700; color: var(--gray-500); margin-right: 0.2rem; }
+  .guideline-section h3 {
+    font-size: 0.88rem; font-weight: 700;
+    color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* ── Criterion List ─────────────────────────────────────────────────────── */
+  .criterion-list {
+    list-style: none;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .criterion-item { border-bottom: 1px solid var(--gray-200); }
+  .criterion-item:last-child { border-bottom: none; }
+
+  .criterion-row {
+    display: flex; align-items: center; gap: 0.625rem;
+    padding: 0.6rem 0.875rem;
+    transition: background 0.1s;
+  }
+  .criterion-row:hover { background: var(--gray-100); }
+  .criterion-item.is-checked > .criterion-row { background: var(--green-light); }
+
+  /* Checkbox + label */
+  .criterion-label {
+    display: flex; align-items: center; gap: 0.625rem;
+    flex: 1; cursor: pointer; min-width: 0;
+  }
+  .criterion-label input[type="checkbox"] {
+    width: 1rem; height: 1rem;
+    flex-shrink: 0; accent-color: var(--green); cursor: pointer;
+  }
+  .criterion-label input[type="checkbox"]:focus-visible {
+    outline: 3px solid var(--brand); outline-offset: 2px;
+  }
+  .sc-id {
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--gray-500); white-space: nowrap;
+    flex-shrink: 0; min-width: 2.75rem;
+    font-family: var(--mono);
+  }
+  .criterion-item.is-checked .sc-id { color: var(--green); }
+  .sc-name {
+    font-size: 0.9rem; color: var(--black);
+    flex: 1; min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .criterion-item.is-checked .sc-name {
+    color: var(--gray-500);
+  }
+
+  .badge {
+    font-size: 0.72rem; color: var(--gray-500);
+    font-family: var(--mono);
+  }
+  .badge--new  { color: var(--green); border-color: var(--green); }
+  .badge--obs  { color: var(--gray-500); border-color: var(--gray-300); font-style: italic; }
+
+  .sep { color: var(--gray-300); font-size: 0.75rem; flex-shrink: 0; user-select: none; }
+
+  /* Understanding link */
+  .sc-link {
+    font-size: 0.78rem; color: var(--brand); text-decoration: none;
+    white-space: nowrap; flex-shrink: 0;
+    border-bottom: 1px solid transparent;
+  }
+  .sc-link:hover { border-bottom-color: var(--brand); }
+  .sc-link:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+
+  /* Obsolete note */
+  .obs-note {
+    padding: 0.4rem 0.875rem 0.5rem 2.5rem;
+    font-size: 0.8rem; color: var(--gray-500); font-style: italic;
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  /* Hidden via filter */
+  [hidden] { display: none !important; }
+
+  /* Empty state */
+  .empty-state {
+    display: none; padding: 2.5rem 1.25rem;
+    text-align: center; color: var(--gray-500); font-size: 0.9rem;
+  }
+  .empty-state.visible { display: block; }
+
+  /* ── Modal ──────────────────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+  .modal {
+    background: var(--white); border-radius: var(--radius);
+    padding: 2rem; max-width: 420px; width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .modal h2 { font-size: 1.1rem; font-weight: 700; color: var(--black); margin-bottom: 0.75rem; }
+  .modal p { font-size: 0.9rem; color: var(--gray-700); margin-bottom: 1.5rem; line-height: 1.55; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+  .btn-cancel {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem; font-family: var(--font); font-weight: 600;
+    background: var(--white); color: var(--gray-700);
+    border: 1.5px solid var(--gray-300); border-radius: var(--radius); cursor: pointer;
+  }
+  .btn-cancel:hover { border-color: var(--gray-500); }
+  .btn-cancel:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  .btn-confirm {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9rem; font-family: var(--font); font-weight: 600;
+    background: var(--red); color: var(--white);
+    border: 1.5px solid var(--red); border-radius: var(--radius); cursor: pointer;
+  }
+  .btn-confirm:hover { background: var(--red-hover); border-color: var(--red-hover); }
+  .btn-confirm:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+  /* ── Footer ─────────────────────────────────────────────────────────────── */
+  .site-footer {
+    border-top: 1px solid var(--gray-200);
+    padding: 1.5rem 0; margin-top: 3rem;
+    font-size: 0.8rem; color: var(--gray-500);
+  }
+  .site-footer a { color: var(--brand); }
+
+  /* ── Footer layout ──────────────────────────────────────────────────────── */
+  .footer-inner {
+    display: flex; flex-wrap: wrap;
+    justify-content: space-between; align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* ── Theme switcher ─────────────────────────────────────────────────────── */
+  .theme-switcher {
+    display: flex; align-items: center; gap: 0.5rem;
+    border: none; padding: 0; margin: 0;
+  }
+  .theme-label {
+    font-size: 0.8rem;
+    color: var(--gray-700); white-space: nowrap;
+  }
+  .theme-switcher .options { display: flex; gap: 0.125rem; }
+  .theme-switcher input[type="radio"] {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .theme-switcher label {
+    font-size: 0.8rem; font-family: var(--font); color: var(--gray-500);
+    cursor: pointer; padding: 0.2rem 0.6rem;
+    border: 1.5px solid transparent; border-radius: 2px;
+    transition: color 0.15s, border-color 0.15s; user-select: none;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+  .theme-switcher label:hover { color: var(--black); border-color: var(--gray-300); }
+  .theme-switcher input[type="radio"]:checked + label {
+    color: var(--black); font-weight: 600; border-color: var(--gray-300);
+  }
+  .theme-switcher input[type="radio"]:focus-visible + label {
+    outline: 3px solid var(--brand); outline-offset: 2px;
+  }
+  /* In dark mode the gray border is too subtle; use brand color instead */
+  [data-theme="dark"] .theme-switcher input[type="radio"]:checked + label,
+  [data-theme="system"]:where([data-os="dark"]) .theme-switcher input[type="radio"]:checked + label {
+    border-color: var(--brand); color: var(--brand);
+  }
+
+  /* ── Print ──────────────────────────────────────────────────────────────── */
+  @media print {
+    .skip-link, .controls-bar, .progress-section,
+    .btn-notes, .notes-panel, .sc-link { display: none !important; }
+    .criterion-item[hidden] { display: list-item !important; }
+    .guideline-section[hidden], .principle-section[hidden] { display: block !important; }
+    .criterion-item.is-checked > .criterion-row { background: none; }
+    .criterion-item.is-checked .sc-name { text-decoration: none; color: var(--black); }
+    .criterion-row { padding: 0.35rem 0; border-bottom: 1px solid var(--gray-200); }
+    .criterion-list { border: none; }
+    body { padding: 0; font-size: 0.85rem; }
+    .site-header { padding: 1rem 0; }
+    a[href]::after { content: ""; }
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .btn-reset { width: 100%; }
+    .criterion-row { flex-wrap: wrap; }
+    .sc-link { display: none; }
+  }
+
+  @media (max-width: 400px) {
+    .criterion-label { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <span class="report-label">WCAG 2.2 Audit Tool</span>
+  <h1>Level A / AA Audit Checklist</h1>
+  <ul class="meta-list">
+    <li><strong>Standard:</strong> WCAG 2.2</li>
+    <li><strong>Levels:</strong> A and AA</li>
+    <li><strong>Total criteria:</strong> 55</li>
+    <li><strong>Reference:</strong> <a href="https://www.w3.org/TR/WCAG22/">W3C WCAG 2.2</a></li>
+  </ul>
+</header>
+
+<main id="main">
+
+  <!-- ── Progress + Controls ───────────────────────────────────────────── -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Progress</span>
+      <span class="progress-count" id="prog-count" aria-live="polite" aria-atomic="true">0 of 55 reviewed</span>
+    </div>
+    <div class="progress-track" role="none">
+      <div class="progress-fill" id="prog-fill"
+           role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="55"
+           aria-label="Checklist progress"></div>
+    </div>
+    <div class="progress-controls">
+      <label class="toggle-label">
+        <input type="checkbox" id="funreviewed">
+        Show unchecked only
+      </label>
+      <button class="btn-reset" id="btn-reset" type="button">Reset Checklist</button>
+    </div>
+  </div>
+
+  <!-- ── Checklist ─────────────────────────────────────────────────────── -->
+  <div id="checklist"></div>
+  <div class="empty-state" id="empty-state" role="status">No criteria match the current filters.</div>
+
+</main>
+
+<!-- ── Reset Modal ────────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal">
+    <h2 id="modal-title">Reset Checklist</h2>
+    <p>This will clear all checked criteria and any notes you have entered. This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel" type="button">Cancel</button>
+      <button class="btn-confirm" id="btn-confirm" type="button">Yes, Reset All</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>Progress is automatically saved to browser local storage.</p>
+    <div class="theme-switcher" id="theme-fieldset" role="radiogroup" aria-labelledby="theme-label">
+      <span class="theme-label" id="theme-label">Color scheme:</span>
+      <div class="options">
+        <input type="radio" name="theme" id="theme-system" value="system">
+        <label for="theme-system">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          System
+        </label>
+        <input type="radio" name="theme" id="theme-light" value="light">
+        <label for="theme-light">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          Light
+        </label>
+        <input type="radio" name="theme" id="theme-dark" value="dark">
+        <label for="theme-dark">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          Dark
+        </label>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /.wrapper -->
+
+<script>
+/* ── Criteria data ─────────────────────────────────────────────────────────── */
+const CRITERIA = [
+  // ── Principle 1: Perceivable ─────────────────────────────────────────────
+  { id:'1.1.1',  name:'Non-text Content',                                     level:'A',  p:'1', pName:'Perceivable',    gl:'1.1', glName:'Text Alternatives',           slug:'non-text-content',                                  new22:false },
+  { id:'1.2.1',  name:'Audio-only and Video-only (Prerecorded)',              level:'A',  p:'1', gl:'1.2', glName:'Time-based Media',                               slug:'audio-only-and-video-only-prerecorded',              new22:false },
+  { id:'1.2.2',  name:'Captions (Prerecorded)',                               level:'A',  p:'1', gl:'1.2', slug:'captions-prerecorded',                              new22:false },
+  { id:'1.2.3',  name:'Audio Description or Media Alternative (Prerecorded)', level:'A',  p:'1', gl:'1.2', slug:'audio-description-or-media-alternative-prerecorded', new22:false },
+  { id:'1.2.4',  name:'Captions (Live)',                                       level:'AA', p:'1', gl:'1.2', slug:'captions-live',                                      new22:false },
+  { id:'1.2.5',  name:'Audio Description (Prerecorded)',                       level:'AA', p:'1', gl:'1.2', slug:'audio-description-prerecorded',                      new22:false },
+  { id:'1.3.1',  name:'Info and Relationships',                                level:'A',  p:'1', gl:'1.3', glName:'Adaptable',                                        slug:'info-and-relationships',                            new22:false },
+  { id:'1.3.2',  name:'Meaningful Sequence',                                   level:'A',  p:'1', gl:'1.3', slug:'meaningful-sequence',                                new22:false },
+  { id:'1.3.3',  name:'Sensory Characteristics',                               level:'A',  p:'1', gl:'1.3', slug:'sensory-characteristics',                            new22:false },
+  { id:'1.3.4',  name:'Orientation',                                           level:'AA', p:'1', gl:'1.3', slug:'orientation',                                        new22:false },
+  { id:'1.3.5',  name:'Identify Input Purpose',                                level:'AA', p:'1', gl:'1.3', slug:'identify-input-purpose',                             new22:false },
+  { id:'1.4.1',  name:'Use of Color',                                          level:'A',  p:'1', gl:'1.4', glName:'Distinguishable',                                  slug:'use-of-color',                                      new22:false },
+  { id:'1.4.2',  name:'Audio Control',                                         level:'A',  p:'1', gl:'1.4', slug:'audio-control',                                      new22:false },
+  { id:'1.4.3',  name:'Contrast (Minimum)',                                    level:'AA', p:'1', gl:'1.4', slug:'contrast-minimum',                                   new22:false },
+  { id:'1.4.4',  name:'Resize Text',                                           level:'AA', p:'1', gl:'1.4', slug:'resize-text',                                        new22:false },
+  { id:'1.4.5',  name:'Images of Text',                                        level:'AA', p:'1', gl:'1.4', slug:'images-of-text',                                     new22:false },
+  { id:'1.4.10', name:'Reflow',                                                level:'AA', p:'1', gl:'1.4', slug:'reflow',                                              new22:false },
+  { id:'1.4.11', name:'Non-text Contrast',                                     level:'AA', p:'1', gl:'1.4', slug:'non-text-contrast',                                  new22:false },
+  { id:'1.4.12', name:'Text Spacing',                                          level:'AA', p:'1', gl:'1.4', slug:'text-spacing',                                       new22:false },
+  { id:'1.4.13', name:'Content on Hover or Focus',                             level:'AA', p:'1', gl:'1.4', slug:'content-on-hover-or-focus',                          new22:false },
+  // ── Principle 2: Operable ────────────────────────────────────────────────
+  { id:'2.1.1',  name:'Keyboard',                                              level:'A',  p:'2', pName:'Operable',       gl:'2.1', glName:'Keyboard Accessible',        slug:'keyboard',                                          new22:false },
+  { id:'2.1.2',  name:'No Keyboard Trap',                                      level:'A',  p:'2', gl:'2.1', slug:'no-keyboard-trap',                                   new22:false },
+  { id:'2.1.4',  name:'Character Key Shortcuts',                               level:'A',  p:'2', gl:'2.1', slug:'character-key-shortcuts',                            new22:false },
+  { id:'2.2.1',  name:'Timing Adjustable',                                     level:'A',  p:'2', gl:'2.2', glName:'Enough Time',                                      slug:'timing-adjustable',                                 new22:false },
+  { id:'2.2.2',  name:'Pause, Stop, Hide',                                     level:'A',  p:'2', gl:'2.2', slug:'pause-stop-hide',                                    new22:false },
+  { id:'2.3.1',  name:'Three Flashes or Below Threshold',                      level:'A',  p:'2', gl:'2.3', glName:'Seizures and Physical Reactions',                  slug:'three-flashes-or-below-threshold',                  new22:false },
+  { id:'2.4.1',  name:'Bypass Blocks',                                         level:'A',  p:'2', gl:'2.4', glName:'Navigable',                                        slug:'bypass-blocks',                                     new22:false },
+  { id:'2.4.2',  name:'Page Titled',                                           level:'A',  p:'2', gl:'2.4', slug:'page-titled',                                        new22:false },
+  { id:'2.4.3',  name:'Focus Order',                                           level:'A',  p:'2', gl:'2.4', slug:'focus-order',                                        new22:false },
+  { id:'2.4.4',  name:'Link Purpose (In Context)',                             level:'A',  p:'2', gl:'2.4', slug:'link-purpose-in-context',                            new22:false },
+  { id:'2.4.5',  name:'Multiple Ways',                                         level:'AA', p:'2', gl:'2.4', slug:'multiple-ways',                                      new22:false },
+  { id:'2.4.6',  name:'Headings and Labels',                                   level:'AA', p:'2', gl:'2.4', slug:'headings-and-labels',                                new22:false },
+  { id:'2.4.7',  name:'Focus Visible',                                         level:'AA', p:'2', gl:'2.4', slug:'focus-visible',                                      new22:false },
+  { id:'2.4.11', name:'Focus Not Obscured (Minimum)',                          level:'AA', p:'2', gl:'2.4', slug:'focus-not-obscured-minimum',                         new22:true  },
+  { id:'2.5.1',  name:'Pointer Gestures',                                      level:'A',  p:'2', gl:'2.5', glName:'Input Modalities',                                 slug:'pointer-gestures',                                  new22:false },
+  { id:'2.5.2',  name:'Pointer Cancellation',                                  level:'A',  p:'2', gl:'2.5', slug:'pointer-cancellation',                               new22:false },
+  { id:'2.5.3',  name:'Label in Name',                                         level:'A',  p:'2', gl:'2.5', slug:'label-in-name',                                      new22:false },
+  { id:'2.5.4',  name:'Motion Actuation',                                      level:'A',  p:'2', gl:'2.5', slug:'motion-actuation',                                   new22:false },
+  { id:'2.5.7',  name:'Dragging Movements',                                    level:'AA', p:'2', gl:'2.5', slug:'dragging-movements',                                 new22:true  },
+  { id:'2.5.8',  name:'Target Size (Minimum)',                                 level:'AA', p:'2', gl:'2.5', slug:'target-size-minimum',                                new22:true  },
+  // ── Principle 3: Understandable ──────────────────────────────────────────
+  { id:'3.1.1',  name:'Language of Page',                                      level:'A',  p:'3', pName:'Understandable', gl:'3.1', glName:'Readable',                 slug:'language-of-page',                                  new22:false },
+  { id:'3.1.2',  name:'Language of Parts',                                     level:'AA', p:'3', gl:'3.1', slug:'language-of-parts',                                  new22:false },
+  { id:'3.2.1',  name:'On Focus',                                              level:'A',  p:'3', gl:'3.2', glName:'Predictable',                                      slug:'on-focus',                                          new22:false },
+  { id:'3.2.2',  name:'On Input',                                              level:'A',  p:'3', gl:'3.2', slug:'on-input',                                           new22:false },
+  { id:'3.2.3',  name:'Consistent Navigation',                                 level:'AA', p:'3', gl:'3.2', slug:'consistent-navigation',                              new22:false },
+  { id:'3.2.4',  name:'Consistent Identification',                             level:'AA', p:'3', gl:'3.2', slug:'consistent-identification',                          new22:false },
+  { id:'3.2.6',  name:'Consistent Help',                                       level:'AA', p:'3', gl:'3.2', slug:'consistent-help',                                    new22:true  },
+  { id:'3.3.1',  name:'Error Identification',                                  level:'A',  p:'3', gl:'3.3', glName:'Input Assistance',                                 slug:'error-identification',                              new22:false },
+  { id:'3.3.2',  name:'Labels or Instructions',                                level:'A',  p:'3', gl:'3.3', slug:'labels-or-instructions',                             new22:false },
+  { id:'3.3.3',  name:'Error Suggestion',                                      level:'AA', p:'3', gl:'3.3', slug:'error-suggestion',                                   new22:false },
+  { id:'3.3.4',  name:'Error Prevention (Legal, Financial, Data)',             level:'AA', p:'3', gl:'3.3', slug:'error-prevention-legal-financial-data',               new22:false },
+  { id:'3.3.7',  name:'Redundant Entry',                                       level:'A',  p:'3', gl:'3.3', slug:'redundant-entry',                                    new22:true  },
+  { id:'3.3.8',  name:'Accessible Authentication (Minimum)',                   level:'AA', p:'3', gl:'3.3', slug:'accessible-authentication-minimum',                  new22:true  },
+  // ── Principle 4: Robust ──────────────────────────────────────────────────
+  { id:'4.1.2',  name:'Name, Role, Value',                                     level:'A',  p:'4', pName:'Robust',         gl:'4.1', glName:'Compatible',                slug:'name-role-value',                                    new22:false },
+  { id:'4.1.3',  name:'Status Messages',                                       level:'AA', p:'4', gl:'4.1', slug:'status-messages',                                    new22:false },
+];
+
+/* ── State & storage ───────────────────────────────────────────────────────── */
+const STORAGE_KEY = 'wcag22-audit-checklist';
+let state = { checked: {}, filterUnchecked: false, lastSaved: null };
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = JSON.parse(raw);
+  } catch(e) {
+    state = { checked: {}, filterUnchecked: false, lastSaved: null };
+  }
+}
+
+function saveState() {
+  state.lastSaved = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  renderLastSaved();
+}
+
+function renderLastSaved() {
+  const el = document.getElementById('last-saved');
+  if (!el || !state.lastSaved) return;
+  const d = new Date(state.lastSaved);
+  el.textContent = 'Last saved ' + d.toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric'}) + ' at ' + d.toLocaleTimeString(undefined, {hour:'numeric',minute:'2-digit'}) + '.';
+}
+
+/* ── Build checklist ───────────────────────────────────────────────────────── */
+
+// Index guideline names and principle names from first occurrence in data
+const glNames = {}, pNames = {};
+for (const c of CRITERIA) {
+  if (c.glName && !glNames[c.gl]) glNames[c.gl] = c.glName;
+  if (c.pName  && !pNames[c.p])   pNames[c.p]  = c.pName;
+}
+
+function buildChecklist() {
+  // Group: principle > guideline > criteria[]
+  const structure = {};
+  for (const c of CRITERIA) {
+    if (!structure[c.p]) structure[c.p] = {};
+    if (!structure[c.p][c.gl]) structure[c.p][c.gl] = [];
+    structure[c.p][c.gl].push(c);
+  }
+
+  const container = document.getElementById('checklist');
+  let html = '';
+
+  for (const [p, gls] of Object.entries(structure)) {
+    html += `<section class="principle-section" data-p="${p}" id="p${p}">`;
+    html += `<div class="principle-header">`;
+    html += `<span class="principle-number">Principle ${p}</span>`;
+    html += `<h2>${pNames[p] || ''}</h2>`;
+    html += `</div>`;
+
+    for (const [gl, criteria] of Object.entries(gls)) {
+      const glId = 'gl' + gl.replace('.', '-');
+      html += `<div class="guideline-section" data-p="${p}" data-gl="${gl}" id="${glId}">`;
+      html += `<div class="guideline-header">`;
+      html += `<h3><span class="guideline-id">${gl}</span> ${glNames[gl] || gl}</h3>`;
+      html += `</div>`;
+      html += `<ul class="criterion-list" role="list">`;
+
+      for (const c of criteria) {
+        const cbId    = 'cb-' + c.id.replace(/\./g, '-');
+        const isChecked = !!state.checked[c.id];
+        const url = `https://www.w3.org/WAI/WCAG22/Understanding/${c.slug}`;
+
+        html += `<li class="criterion-item${isChecked ? ' is-checked' : ''}" data-id="${c.id}" data-level="${c.level}" data-p="${p}">`;
+        html += `<div class="criterion-row">`;
+        html += `<label class="criterion-label" for="${cbId}">`;
+        html += `<input type="checkbox" id="${cbId}" data-id="${c.id}"${isChecked ? ' checked' : ''}>`;
+        html += `<span class="sc-id">${c.id}</span>`;
+        html += `<span class="sc-name">${c.name} <span class="badge badge--${c.level}">Level ${c.level}</span></span>`;
+        html += `</label>`;
+        html += `<a class="sc-link" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Understanding ${c.id} ${c.name} (opens in new tab)">Understanding ↗</a>`;
+        html += `</div>`;
+
+        html += `</li>`;
+      }
+
+      html += `</ul></div>`;
+    }
+
+    html += `</section>`;
+  }
+
+  container.innerHTML = html;
+}
+
+/* ── Progress ──────────────────────────────────────────────────────────────── */
+function updateProgress() {
+  const all   = [...document.querySelectorAll('.criterion-item')];
+  const total = all.length;
+  const done  = all.filter(el => el.classList.contains('is-checked')).length;
+  const pct   = total > 0 ? (done / total) * 100 : 0;
+
+  document.getElementById('prog-count').textContent = `${done} of ${total} reviewed`;
+  const fill = document.getElementById('prog-fill');
+  fill.style.width = pct + '%';
+  fill.setAttribute('aria-valuenow', done);
+  fill.setAttribute('aria-valuemax', total);
+}
+
+/* ── Filters ───────────────────────────────────────────────────────────────── */
+function applyFilters() {
+  const untested = document.getElementById('funreviewed').checked;
+
+  document.querySelectorAll('.criterion-item').forEach(item => {
+    const show = !untested || !item.classList.contains('is-checked');
+    item.hidden = !show;
+  });
+
+  // Hide guideline/principle containers with nothing visible
+  document.querySelectorAll('.guideline-section').forEach(gl => {
+    gl.hidden = ![...gl.querySelectorAll('.criterion-item')].some(i => !i.hidden);
+  });
+  document.querySelectorAll('.principle-section').forEach(ps => {
+    ps.hidden = ![...ps.querySelectorAll('.criterion-item')].some(i => !i.hidden);
+  });
+
+  const anyVisible = [...document.querySelectorAll('.criterion-item')].some(i => !i.hidden);
+  document.getElementById('empty-state').classList.toggle('visible', !anyVisible);
+
+  updateProgress();
+}
+
+/* ── Event wiring ──────────────────────────────────────────────────────────── */
+function attachEvents() {
+  const cl = document.getElementById('checklist');
+
+  // Checkbox toggle
+  cl.addEventListener('change', e => {
+    if (e.target.type === 'checkbox' && e.target.dataset.id) {
+      const id = e.target.dataset.id;
+      state.checked[id] = e.target.checked;
+      e.target.closest('.criterion-item').classList.toggle('is-checked', e.target.checked);
+      saveState();
+      applyFilters();
+
+      // If "Show unchecked only" is active and the item just got checked,
+      // move focus to the next visible unchecked criterion, then try the previous,
+      // then fall back to Reset Checklist if none remain.
+      if (document.getElementById('funreviewed').checked && e.target.checked) {
+        const all = [...document.querySelectorAll('.criterion-item')];
+        const currentItem = e.target.closest('.criterion-item');
+        const currentIndex = all.indexOf(currentItem);
+
+        // Look forward first
+        const next = all.slice(currentIndex + 1).find(el => !el.hidden);
+        if (next) {
+          next.querySelector('input[type="checkbox"]').focus();
+        } else {
+          // Look backward
+          const prev = all.slice(0, currentIndex).reverse().find(el => !el.hidden);
+          if (prev) {
+            prev.querySelector('input[type="checkbox"]').focus();
+          } else {
+            document.getElementById('btn-reset').focus();
+          }
+        }
+      }
+    }
+  });
+
+  // Filter controls
+  document.getElementById('funreviewed').addEventListener('change', function() {
+    state.filterUnchecked = this.checked;
+    saveState();
+    applyFilters();
+  });
+
+  // Reset button
+  document.getElementById('btn-reset').addEventListener('click', openModal);
+
+  // Modal buttons
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  document.getElementById('btn-confirm').addEventListener('click', () => { resetChecklist(); closeModal(); });
+
+  // Close modal on backdrop click
+  document.getElementById('modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal')) closeModal();
+  });
+
+  // Keyboard: Escape closes, Tab traps focus in modal
+  document.addEventListener('keydown', e => {
+    const modal = document.getElementById('modal');
+    if (modal.hidden) return;
+    if (e.key === 'Escape') { closeModal(); return; }
+    if (e.key === 'Tab') trapFocus(e, modal.querySelector('.modal'));
+  });
+}
+
+/* ── Modal ─────────────────────────────────────────────────────────────────── */
+let returnFocus = null;
+
+function openModal() {
+  returnFocus = document.activeElement;
+  document.getElementById('modal').hidden = false;
+  document.getElementById('btn-cancel').focus();
+}
+
+function closeModal() {
+  document.getElementById('modal').hidden = true;
+  if (returnFocus) returnFocus.focus();
+}
+
+function trapFocus(e, container) {
+  const focusable = [...container.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+  )];
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+  } else {
+    if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+  }
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────────── */
+function resetChecklist() {
+  state = { checked: {}, filterUnchecked: false, lastSaved: null };
+  saveState();
+
+  document.querySelectorAll('.criterion-item').forEach(item => {
+    const cb = item.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = false;
+    item.classList.remove('is-checked');
+  });
+
+  document.getElementById('funreviewed').checked = false;
+  applyFilters();
+}
+
+/* ── Init ──────────────────────────────────────────────────────────────────── */
+loadState();
+buildChecklist();
+attachEvents();
+document.getElementById('funreviewed').checked = !!state.filterUnchecked;
+applyFilters();
+renderLastSaved();
+
+/* ── Theme switcher ────────────────────────────────────────────────────────── */
+(function() {
+  var root   = document.documentElement;
+  var inputs = document.querySelectorAll('#theme-fieldset input[type="radio"]');
+  var mq     = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyOS() {
+    root.setAttribute('data-os', mq.matches ? 'dark' : 'light');
+  }
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('theme', theme); } catch(e) {}
+    inputs.forEach(function(input) { input.checked = (input.value === theme); });
+    if (theme === 'system') applyOS();
+  }
+
+  mq.addEventListener('change', function() {
+    if (root.getAttribute('data-theme') === 'system') applyOS();
+  });
+
+  var stored = null;
+  try { stored = localStorage.getItem('theme'); } catch(e) {}
+  applyOS();
+  applyTheme(stored || 'system');
+
+  inputs.forEach(function(input) {
+    input.addEventListener('change', function() {
+      if (this.checked) applyTheme(this.value);
+    });
+  });
+}());
+</script>
+</body>
+</html>
