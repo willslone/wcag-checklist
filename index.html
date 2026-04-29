@@ -365,7 +365,13 @@
   .progress-controls .toggle-label { flex-basis: 100%; }
   .progress-controls .btn-reset { margin-top: 0.5rem; }
 
+  .theme-switcher { flex-wrap: wrap; }
+  .theme-label { flex-basis: 100%; }
+
   @media (min-width: 401px) {
+    .theme-switcher { flex-wrap: nowrap; }
+    .theme-label { flex-basis: auto; }
+  }
     .progress-controls { flex-wrap: nowrap; }
     .progress-controls .toggle-label { flex-basis: auto; }
     .progress-controls .btn-reset { margin-top: 0; }
