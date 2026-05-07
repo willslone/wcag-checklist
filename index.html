@@ -880,7 +880,7 @@ filterPanel.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeFilters(); btnFilters.focus(); }
 });
 document.getElementById('filter-disclosure').addEventListener('focusout', e => {
-  if (!document.getElementById('filter-disclosure').contains(e.relatedTarget)) closeFilters();
+  if (e.relatedTarget && !document.getElementById('filter-disclosure').contains(e.relatedTarget)) closeFilters();
 });
 document.addEventListener('click', e => {
   if (!document.getElementById('filter-disclosure').contains(e.target)) closeFilters();
