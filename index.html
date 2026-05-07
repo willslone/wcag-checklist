@@ -65,6 +65,13 @@ body {
   transition: background 0.2s, color 0.2s;
 }
 
+/* ── Screen-reader only ─────────────────────────────────────────────────── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
 /* ── Focus ─────────────────────────────────────────────────────────────── */
 :focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; }
 :focus:not(:focus-visible) { outline: none; }
@@ -449,7 +456,8 @@ body {
 
     <!-- ── Checklist ───────────────────────────────────────────────────── -->
     <div id="checklist"></div>
-    <div class="empty-state" id="empty-state" role="status">Select at least one level above to show criteria.</div>
+    <div class="empty-state" id="empty-state" role="status"></div>
+    <div class="sr-only" id="live-region" aria-live="polite" aria-atomic="true"></div>
 
   </main>
 
@@ -723,9 +731,22 @@ function applyFilters() {
     ps.hidden = ![...ps.querySelectorAll('.criterion-item')].some(i => !i.hidden);
   });
 
-  document.getElementById('empty-state').classList.toggle(
-    'visible', ![...document.querySelectorAll('.criterion-item')].some(i => !i.hidden)
-  );
+  const anyVisible = [...document.querySelectorAll('.criterion-item')].some(i => !i.hidden);
+  const emptyState  = document.getElementById('empty-state');
+  const liveRegion  = document.getElementById('live-region');
+  emptyState.classList.toggle('visible', !anyVisible);
+  if (!anyVisible) {
+    const noLevels = !A && !AA && !AAA;
+    const msg = noLevels
+      ? 'Select at least one level in the Filters menu to show criteria.'
+      : 'All criteria tested. Reset Checklist to begin a new sample.';
+    emptyState.textContent = msg;
+    liveRegion.textContent = '';
+    setTimeout(() => { liveRegion.textContent = msg; }, 100);
+  } else {
+    emptyState.textContent = '';
+    liveRegion.textContent = '';
+  }
 
   // Track last visible item per list to avoid double border
   document.querySelectorAll('.criterion-list').forEach(list => {
@@ -810,17 +831,19 @@ function trapFocus(e, container) {
 
 /* ── Reset ─────────────────────────────────────────────────────────────── */
 function resetChecklist() {
-  state = DEFAULT_STATE();
+  state = {
+    checked: {},
+    filterUnchecked: state.filterUnchecked,
+    filterLevels: { ...state.filterLevels },
+    lastSaved: null
+  };
   saveState();
   document.querySelectorAll('.criterion-item').forEach(item => {
     const cb = item.querySelector('input[type="checkbox"]');
     if (cb) cb.checked = false;
     item.classList.remove('is-checked');
   });
-  document.getElementById('level-a').checked   = true;
-  document.getElementById('level-aa').checked  = true;
-  document.getElementById('level-aaa').checked = false;
-  document.getElementById('funreviewed').checked = false;
+  document.getElementById('funreviewed').checked = state.filterUnchecked;
   applyFilters();
 }
 
