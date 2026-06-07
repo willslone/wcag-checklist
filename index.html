@@ -100,6 +100,15 @@ body {
 }
 .header-note { font-size: 1rem; color: var(--text-muted); margin-top: 0.5rem; }
 
+
+.group-select {
+  font: inherit;
+  border: 2px solid var(--ink);
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.2rem 0.4rem;
+}
+
 /* ── Progress section ──────────────────────────────────────────────────── */
 .progress-section {
   border: var(--border);
@@ -150,6 +159,7 @@ body {
   font-size: 1rem; cursor: pointer;
   color: var(--text-muted); user-select: none;
 }
+.toggle-label--stacked { flex-direction: column; align-items: flex-start; }
 .toggle-label input[type="checkbox"] {
   width: 1rem; height: 1rem;
   accent-color: var(--purple); cursor: pointer;
@@ -376,18 +386,173 @@ body {
 
 /* ── Responsive (mobile-first) ─────────────────────────────────────────── */
 .badge { display: block; }
-.progress-controls { flex-wrap: wrap; }
+.progress-header { flex-direction: column; align-items: flex-start; }
+.progress-controls { flex-direction: column; align-items: flex-start; }
 .theme-switcher { flex-wrap: wrap; }
 .theme-label { flex-basis: 100%; }
 
+@media (min-width: 370px) {
+  .progress-header { flex-direction: row; align-items: center; }
+}
+
 @media (min-width: 401px) {
-  .progress-controls { flex-wrap: nowrap; }
   .theme-switcher { flex-wrap: nowrap; }
   .theme-label { flex-basis: auto; }
 }
 
+@media (min-width: 610px) {
+  .progress-controls { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+}
+
 @media (min-width: 641px) {
   .badge { display: inline; }
+}
+
+/* ── Notes ─────────────────────────────────────────────────────────────── */
+.add-notes-wrap {
+  display: flex; align-items: center;
+  padding: 0 0.5rem; flex-shrink: 0;
+  position: relative;
+}
+.add-notes-wrap::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--ink);
+}
+.btn-add-notes {
+  font-size: 0.8125rem; font-family: var(--font-body); font-weight: 700;
+  background: transparent; color: var(--purple-text);
+  border: 2px solid var(--purple-text); padding: 0.2rem 0.625rem;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: background 0.1s, color 0.1s, transform 0.1s;
+}
+.btn-add-notes:hover {
+  background: var(--purple-light);
+  transform: translate(1px, 1px);
+}
+.btn-add-notes:focus-visible { outline: 3px solid var(--purple); outline-offset: -6px; }
+.btn-add-notes.has-notes {
+  background: var(--purple);
+  color: var(--on-purple);
+  border-color: var(--purple);
+}
+.btn-add-notes.has-notes:hover { transform: translate(1px, 1px); }
+.btn-add-notes.has-notes:focus-visible {
+  outline: 3px solid var(--on-purple);
+  outline-offset: -6px;
+}
+
+.notes-panel {
+  border-top: 2px solid var(--ink);
+  background: var(--bg);
+  padding: 0.875rem 1rem;
+}
+.notes-list {
+  list-style: none;
+  margin-bottom: 0.75rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.notes-list:empty { display: none; }
+.note-entry {
+  display: flex; align-items: stretch;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  font-size: 0.9375rem; line-height: 1.5; color: var(--text);
+}
+.note-entry-text { flex: 1; min-width: 0; white-space: pre-wrap; word-break: break-word; padding: 0.5rem 0.75rem; }
+.btn-delete-note {
+  font-size: 0.8125rem; font-family: var(--font-body); font-weight: 700;
+  background: transparent; color: var(--text-muted);
+  border: none; cursor: pointer; padding: 0; flex-shrink: 0;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; min-width: 44px;
+  line-height: 1; transition: color 0.1s, background 0.1s;
+}
+.btn-delete-note::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--ink);
+}
+.btn-delete-note:hover { color: var(--text); background: var(--purple-light); }
+.btn-delete-note:focus-visible { outline: 3px solid var(--purple); outline-offset: -6px; }
+
+.notes-input-row {
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.notes-textarea {
+  font-family: var(--font-body); font-size: 0.9375rem;
+  color: var(--text); background: var(--surface);
+  border: var(--border); padding: 0.5rem 0.75rem;
+  resize: vertical; min-height: 4.5rem; width: 100%;
+  line-height: 1.5;
+}
+.notes-textarea:focus-visible { outline: 3px solid var(--purple); outline-offset: 0; }
+.notes-actions { display: flex; gap: 0.5rem; }
+.btn-save-note {
+  font-size: 0.9375rem; font-family: var(--font-body); font-weight: 700;
+  background: var(--purple); color: var(--on-purple);
+  border: var(--border); box-shadow: var(--shadow);
+  padding: 0.35rem 0.875rem; cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-save-note:hover { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+.btn-save-note:focus-visible { outline: 3px solid var(--on-purple); outline-offset: -9px; }
+.btn-close-notes {
+  font-size: 0.9375rem; font-family: var(--font-body); font-weight: 700;
+  background: var(--surface); color: var(--text);
+  border: var(--border); box-shadow: var(--shadow);
+  padding: 0.35rem 0.875rem; cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+}
+.btn-close-notes:hover { background: var(--purple-light); transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+.btn-close-notes:focus-visible { outline: 3px solid var(--purple); outline-offset: -9px; }
+
+/* ── Download findings button ──────────────────────────────────────────── */
+.btn-download {
+  font-size: 1rem; font-family: var(--font-body); font-weight: 700;
+  background: var(--surface); color: var(--text);
+  border: var(--border); box-shadow: var(--shadow);
+  padding: 0.4rem 1rem; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+}
+.btn-download:hover { background: var(--purple-light); transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+.btn-download:focus-visible { outline: 3px solid var(--purple); outline-offset: -9px; }
+
+/* ── Narrow criterion row layout (mobile base) ──────────────────────────── */
+.criterion-row { flex-wrap: wrap; }
+.criterion-label { flex-basis: 100%; border-bottom: 2px solid var(--ink); }
+.add-notes-wrap { flex: 1; padding: 0; align-items: stretch; }
+.add-notes-wrap::before { display: none; }
+.btn-add-notes { width: 100%; padding-top: 0.625rem; padding-bottom: 0.625rem; border: none; }
+.btn-add-notes.has-notes { border: none; }
+.btn-add-notes:hover,
+.btn-add-notes.has-notes:hover { transform: none; }
+.sc-link::before { display: none; }
+.row-divider { display: block; width: 2px; background: var(--ink); align-self: stretch; flex-shrink: 0; }
+.criterion-list { border: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.criterion-item { border: var(--border); }
+.criterion-item.is-last-visible { border-bottom: var(--border); }
+
+@media (min-width: 620px) {
+  .criterion-row { flex-wrap: nowrap; }
+  .criterion-label { flex-basis: auto; border-bottom: none; }
+  .add-notes-wrap { flex: none; padding: 0 0.5rem; align-items: center; }
+  .add-notes-wrap::before { display: block; }
+  .btn-add-notes { width: auto; min-width: 6.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border: 2px solid var(--purple-text); }
+  .btn-add-notes.has-notes { border: 2px solid var(--purple); }
+  .btn-add-notes:hover { transform: translate(1px, 1px); }
+  .btn-add-notes.has-notes:hover { transform: translate(1px, 1px); }
+  .sc-link::before { display: block; }
+  .row-divider { display: none; }
+  .criterion-list { border: var(--border); display: block; }
+  .criterion-item { border: none; border-bottom: 2px solid var(--ink); }
+  .criterion-item.is-last-visible { border-bottom: none; }
 }
 
 /* ── Print ─────────────────────────────────────────────────────────────── */
@@ -447,8 +612,19 @@ body {
             <label class="toggle-label"><input type="checkbox" id="level-aa" value="AA" checked> Level AA</label>
             <label class="toggle-label"><input type="checkbox" id="level-aaa" value="AAA"> Level AAA</label>
             <label class="toggle-label"><input type="checkbox" id="funreviewed"> Unchecked only</label>
+            <label class="toggle-label toggle-label--stacked" for="group-mode">
+              Group by
+              <select id="group-mode" class="group-select">
+                <option value="principle">WCAG Principle / SC</option>
+                <option value="level">WCAG Level</option>
+              </select>
+            </label>
           </div>
         </div>
+        <button class="btn-download" id="btn-download" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Findings
+        </button>
         <button class="btn-reset" id="btn-reset" type="button">Reset Checklist</button>
       </div>
 
@@ -467,7 +643,7 @@ body {
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
   <div class="modal">
     <h2 id="modal-title">Reset Checklist</h2>
-    <p>This will clear all checked criteria. This action cannot be undone.</p>
+    <p>This will clear all checked criteria and remove all notes. This action cannot be undone.</p>
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-cancel" type="button">Cancel</button>
       <button class="btn-confirm" id="btn-confirm" type="button">Yes, Reset All</button>
@@ -617,8 +793,10 @@ const CRITERIA = [
 const STORAGE_KEY = 'wcag22-audit-checklist';
 const DEFAULT_STATE = () => ({
   checked: {},
+  notes: {},
   filterUnchecked: false,
   filterLevels: { A: true, AA: true, AAA: false },
+  groupMode: 'principle',
   lastSaved: null
 });
 let state = DEFAULT_STATE();
@@ -630,8 +808,10 @@ function loadState() {
       const s = JSON.parse(raw);
       state = {
         checked:         s.checked         || {},
+        notes:           s.notes           || {},
         filterUnchecked: s.filterUnchecked || false,
         filterLevels:    s.filterLevels    || { A: true, AA: true, AAA: false },
+        groupMode:       s.groupMode       || 'principle',
         lastSaved:       s.lastSaved       || null
       };
     }
@@ -650,45 +830,97 @@ for (const c of CRITERIA) {
   if (c.pName  && !pNames[c.p])   pNames[c.p]  = c.pName;
 }
 
+/* ── Helpers ───────────────────────────────────────────────────────────── */
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 /* ── Build checklist ───────────────────────────────────────────────────── */
-function buildChecklist() {
-  const structure = {};
-  for (const c of CRITERIA) {
-    if (!structure[c.p]) structure[c.p] = {};
-    if (!structure[c.p][c.gl]) structure[c.p][c.gl] = [];
-    structure[c.p][c.gl].push(c);
-  }
+function renderCriterion(c) {
+  const cbId = 'cb-' + c.id.replace(/\./g, '-');
+  const isChecked = !!state.checked[c.id];
+  const notesList = state.notes[c.id] || [];
+  const hasNotes = notesList.length > 0;
+  const url = `https://www.w3.org/WAI/WCAG22/Understanding/${c.slug}`;
+  const notesLabel = `${hasNotes ? 'Edit notes' : 'Add notes'} for ${c.id} ${c.name} (Level ${c.level})`;
 
   let html = '';
-  for (const [p, gls] of Object.entries(structure)) {
-    html += `<section class="principle-section" data-p="${p}" id="p${p}">`;
-    html += `<div class="principle-header"><span class="principle-number">Principle ${p}</span><h2>${pNames[p] || ''}</h2></div>`;
+  html += `<li class="criterion-item${isChecked ? ' is-checked' : ''}" data-id="${c.id}" data-level="${c.level}" data-p="${c.p}">`;
+  html += `<div class="criterion-row">`;
+  html += `<label class="criterion-label" for="${cbId}">`;
+  html += `<input type="checkbox" id="${cbId}" data-id="${c.id}"${isChecked ? ' checked' : ''}>`;
+  html += `<span class="sc-id">${c.id}</span>`;
+  html += `<span class="sc-name">${c.name} <span class="badge">Level ${c.level}</span></span>`;
+  html += `</label>`;
+  html += `<div class="add-notes-wrap"><button type="button" class="btn-add-notes${hasNotes ? ' has-notes' : ''}" data-notes-for="${c.id}" aria-label="${notesLabel}" aria-expanded="false" aria-controls="notes-panel-${c.id.replace(/\./g,'-')}">${hasNotes ? 'Edit Notes' : 'Add Notes'}</button></div>`;
+  html += `<div class="row-divider" aria-hidden="true"></div>`;
+  html += `<a class="sc-link" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Understanding ${c.id} ${c.name} (opens in new tab)">`;
+  html += `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8" stroke-width="3"/><line x1="12" y1="12" x2="12" y2="16"/></svg>`;
+  html += `</a></div>`;
+  html += `<div class="notes-panel" id="notes-panel-${c.id.replace(/\./g,'-')}" hidden>`;
+  html += `<ul class="notes-list" aria-label="Notes for ${c.id} ${c.name}">`;
 
-    for (const [gl, criteria] of Object.entries(gls)) {
-      html += `<div class="guideline-section" data-p="${p}" data-gl="${gl}" id="gl${gl.replace('.', '-')}">`;
-      html += `<div class="guideline-header"><h3><span class="guideline-id">${gl}</span>${glNames[gl] || gl}</h3></div>`;
+  notesList.forEach((note, idx) => {
+    html += `<li class="note-entry"><span class="note-entry-text">${escapeHtml(note)}</span><button type="button" class="btn-delete-note" data-id="${c.id}" data-idx="${idx}" aria-label="Delete note ${idx+1} for ${c.id} ${c.name}">✕</button></li>`;
+  });
+
+  html += `</ul>`;
+  html += `<div class="notes-input-row">`;
+  html += `<textarea class="notes-textarea" aria-label="Add a note for ${c.id} ${c.name}" placeholder="Add a note" rows="3"></textarea>`;
+  html += `<div class="notes-actions">`;
+  html += `<button type="button" class="btn-save-note" data-id="${c.id}" aria-label="Add note for ${c.id} ${c.name}">Add</button>`;
+  html += `<button type="button" class="btn-close-notes" data-notes-for="${c.id}" aria-label="Close notes for ${c.id} ${c.name}">Close</button>`;
+  html += `</div></div></div></li>`;
+
+  return html;
+}
+
+function buildChecklist() {
+  let html = '';
+
+  if (state.groupMode === 'level') {
+    const levels = ['A', 'AA', 'AAA'];
+
+    levels.forEach(level => {
+      const criteria = CRITERIA.filter(c => c.level === level);
+
+      html += `<section class="principle-section" data-level-group="${level}">`;
+      html += `<div class="principle-header"><span class="principle-number">WCAG Level</span><h2>Level ${level}</h2></div>`;
       html += `<ul class="criterion-list" role="list">`;
 
-      for (const c of criteria) {
-        const cbId = 'cb-' + c.id.replace(/\./g, '-');
-        const isChecked = !!state.checked[c.id];
-        const url = `https://www.w3.org/WAI/WCAG22/Understanding/${c.slug}`;
+      criteria.forEach(c => {
+        html += renderCriterion(c);
+      });
 
-        html += `<li class="criterion-item${isChecked ? ' is-checked' : ''}" data-id="${c.id}" data-level="${c.level}" data-p="${p}">`;
-        html += `<div class="criterion-row">`;
-        html += `<label class="criterion-label" for="${cbId}">`;
-        html += `<input type="checkbox" id="${cbId}" data-id="${c.id}"${isChecked ? ' checked' : ''}>`;
-        html += `<span class="sc-id">${c.id}</span>`;
-        html += `<span class="sc-name">${c.name} <span class="badge">Level ${c.level}</span></span>`;
-        html += `</label>`;
-        html += `<a class="sc-link" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Understanding ${c.id} ${c.name} (opens in new tab)">`;
-        html += `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8" stroke-width="3"/><line x1="12" y1="12" x2="12" y2="16"/></svg>`;
-        html += `</a></div></li>`;
+      html += `</ul></section>`;
+    });
+  } else {
+    const structure = {};
+
+    for (const c of CRITERIA) {
+      if (!structure[c.p]) structure[c.p] = {};
+      if (!structure[c.p][c.gl]) structure[c.p][c.gl] = [];
+      structure[c.p][c.gl].push(c);
+    }
+
+    for (const [p, gls] of Object.entries(structure)) {
+      html += `<section class="principle-section" data-p="${p}" id="p${p}">`;
+      html += `<div class="principle-header"><span class="principle-number">Principle ${p}</span><h2>${pNames[p] || ''}</h2></div>`;
+
+      for (const [gl, criteria] of Object.entries(gls)) {
+        html += `<div class="guideline-section" data-p="${p}" data-gl="${gl}" id="gl${gl.replace('.', '-')}">`;
+        html += `<div class="guideline-header"><h3><span class="guideline-id">${gl}</span>${glNames[gl] || gl}</h3></div>`;
+        html += `<ul class="criterion-list" role="list">`;
+
+        criteria.forEach(c => {
+          html += renderCriterion(c);
+        });
+
+        html += `</ul></div>`;
       }
 
-      html += `</ul></div>`;
+      html += `</section>`;
     }
-    html += `</section>`;
   }
 
   document.getElementById('checklist').innerHTML = html;
@@ -801,8 +1033,82 @@ function attachEvents() {
     applyFilters();
   });
 
+  // Group mode
+  document.getElementById('group-mode').addEventListener('change', function() {
+    state.groupMode = this.value;
+    saveState();
+    buildChecklist();
+    applyFilters();
+  });
+
+  // Notes toggle buttons
+  cl.addEventListener('click', e => {
+    const toggleBtn = e.target.closest('.btn-add-notes');
+    if (toggleBtn) {
+      const id = toggleBtn.dataset.notesFor;
+      const panelId = 'notes-panel-' + id.replace(/\./g, '-');
+      const panel = document.getElementById(panelId);
+      const open = panel.hidden;
+      panel.hidden = !open;
+      toggleBtn.setAttribute('aria-expanded', String(open));
+      if (open) panel.querySelector('.notes-textarea').focus();
+      return;
+    }
+
+    const closeBtn = e.target.closest('.btn-close-notes');
+    if (closeBtn) {
+      const id = closeBtn.dataset.notesFor;
+      const panelId = 'notes-panel-' + id.replace(/\./g, '-');
+      const panel = document.getElementById(panelId);
+      panel.hidden = true;
+      const toggleBtn = cl.querySelector(`.btn-add-notes[data-notes-for="${id}"]`);
+      if (toggleBtn) { toggleBtn.setAttribute('aria-expanded', 'false'); toggleBtn.focus(); }
+      return;
+    }
+
+    const saveBtn = e.target.closest('.btn-save-note');
+    if (saveBtn) {
+      const id = saveBtn.dataset.id;
+      const panel = document.getElementById('notes-panel-' + id.replace(/\./g, '-'));
+      const ta = panel.querySelector('.notes-textarea');
+      const text = ta.value.trim();
+      if (!text) { ta.focus(); return; }
+      if (!state.notes[id]) state.notes[id] = [];
+      state.notes[id].push(text);
+      saveState();
+      ta.value = '';
+      renderNotesList(id);
+      ta.focus();
+      return;
+    }
+
+    const delBtn = e.target.closest('.btn-delete-note');
+    if (delBtn) {
+      const id = delBtn.dataset.id;
+      const idx = parseInt(delBtn.dataset.idx, 10);
+      const panel = document.getElementById('notes-panel-' + id.replace(/\./g, '-'));
+      const ta = panel.querySelector('.notes-textarea');
+      const criterion = CRITERIA.find(c => c.id === id);
+      const noteText = state.notes[id][idx];
+      const preview = noteText.length > 60 ? noteText.slice(0, 60).trimEnd() + '…' : noteText;
+      if (confirm(`Are you sure you want to delete note ${idx + 1} for ${criterion.id} ${criterion.name}?\n\n"${preview}"`)) {
+        state.notes[id].splice(idx, 1);
+        if (state.notes[id].length === 0) delete state.notes[id];
+        saveState();
+        renderNotesList(id);
+        // refocus add-notes btn
+        const toggleBtn = cl.querySelector(`.btn-add-notes[data-notes-for="${id}"]`);
+        ta.focus();
+        return;
+      } else {
+        delBtn.focus();
+      }
+    }
+  });
+
   // Reset
   document.getElementById('btn-reset').addEventListener('click', openModal);
+  document.getElementById('btn-download').addEventListener('click', downloadFindings);
   document.getElementById('btn-cancel').addEventListener('click', closeModal);
   document.getElementById('btn-confirm').addEventListener('click', () => { resetChecklist(); closeModal(); });
   document.getElementById('modal').addEventListener('click', e => {
@@ -829,21 +1135,123 @@ function trapFocus(e, container) {
   else            { if (document.activeElement === last)  { e.preventDefault(); first.focus(); } }
 }
 
+/* ── Notes helpers ─────────────────────────────────────────────────────── */
+function renderNotesList(id) {
+  const panel = document.getElementById('notes-panel-' + id.replace(/\./g, '-'));
+  if (!panel) return;
+  const list = panel.querySelector('.notes-list');
+  const notes = state.notes[id] || [];
+  const criterion = CRITERIA.find(c => c.id === id);
+  list.innerHTML = notes.map((note, idx) =>
+    `<li class="note-entry"><span class="note-entry-text">${escapeHtml(note)}</span><button type="button" class="btn-delete-note" data-id="${id}" data-idx="${idx}" aria-label="Delete note ${idx+1} for ${criterion.id} ${criterion.name}">✕</button></li>`
+  ).join('');
+  const btn = document.getElementById('checklist').querySelector(`.btn-add-notes[data-notes-for="${id}"]`);
+  if (btn) {
+    const hasNotes = notes.length > 0;
+    btn.textContent = hasNotes ? 'Edit Notes' : 'Add Notes';
+    btn.setAttribute('aria-label', `${hasNotes ? 'Edit notes' : 'Add notes'} for ${criterion.id} ${criterion.name} (Level ${criterion.level})`);
+    btn.classList.toggle('has-notes', hasNotes);
+  }
+}
+
+/* ── Download findings ─────────────────────────────────────────────────── */
+function downloadFindings() {
+  const entries = Object.entries(state.notes).filter(([, notes]) => notes && notes.length > 0);
+
+  if (entries.length === 0) {
+    alert('No findings have been added yet. Use the "Add Notes" button on any criterion to record a finding.');
+    return;
+  }
+
+  const criteriaMap = {};
+  for (const c of CRITERIA) criteriaMap[c.id] = c;
+
+  const lines = [
+    'WCAG 2.2 Audit Findings',
+    '=======================',
+    `Generated: ${new Date().toLocaleString()}`,
+    `Grouped by: ${state.groupMode === 'level' ? 'WCAG Level' : 'WCAG Principle / SC'}`,
+    ''
+  ];
+
+  if (state.groupMode === 'level') {
+    ['A', 'AA', 'AAA'].forEach(level => {
+      const levelEntries = entries
+        .map(([id]) => criteriaMap[id])
+        .filter(c => c && c.level === level);
+
+      if (!levelEntries.length) return;
+
+      lines.push(`Level ${level}`);
+      lines.push('-'.repeat(40));
+
+      levelEntries.forEach(c => {
+        lines.push(`
+SC ${c.id} – ${c.name}`);
+        (state.notes[c.id] || []).forEach((note, i) => {
+          lines.push(`  Finding ${i + 1}: ${note}`);
+        });
+      });
+
+      lines.push('');
+    });
+  } else {
+    const byPrinciple = {};
+
+    for (const [id] of entries) {
+      const c = criteriaMap[id];
+      if (!c) continue;
+      if (!byPrinciple[c.p]) byPrinciple[c.p] = [];
+      byPrinciple[c.p].push(id);
+    }
+
+    for (const [p, ids] of Object.entries(byPrinciple)) {
+      lines.push(`Principle ${p}: ${pNames[p] || ''}`);
+      lines.push('-'.repeat(40));
+
+      for (const id of ids) {
+        const c = criteriaMap[id];
+        const notes = state.notes[id];
+
+        lines.push(`
+SC ${id} – ${c.name} (Level ${c.level})`);
+
+        notes.forEach((note, i) => {
+          lines.push(`  Finding ${i + 1}: ${note}`);
+        });
+      }
+
+      lines.push('');
+    }
+  }
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  a.href = url;
+  a.download = `wcag-findings-${new Date().toISOString().slice(0,10)}.txt`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+}
+
 /* ── Reset ─────────────────────────────────────────────────────────────── */
 function resetChecklist() {
   state = {
     checked: {},
+    notes: {},
     filterUnchecked: state.filterUnchecked,
     filterLevels: { ...state.filterLevels },
     lastSaved: null
   };
   saveState();
-  document.querySelectorAll('.criterion-item').forEach(item => {
-    const cb = item.querySelector('input[type="checkbox"]');
-    if (cb) cb.checked = false;
-    item.classList.remove('is-checked');
-  });
+  buildChecklist();
   document.getElementById('funreviewed').checked = state.filterUnchecked;
+  document.getElementById('group-mode').value = state.groupMode;
   applyFilters();
 }
 
@@ -855,6 +1263,7 @@ document.getElementById('level-a').checked    = !!state.filterLevels.A;
 document.getElementById('level-aa').checked   = !!state.filterLevels.AA;
 document.getElementById('level-aaa').checked  = !!state.filterLevels.AAA;
 document.getElementById('funreviewed').checked = !!state.filterUnchecked;
+document.getElementById('group-mode').value = state.groupMode;
 
 // Filter disclosure
 const btnFilters  = document.getElementById('btn-filters');
