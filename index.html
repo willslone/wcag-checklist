@@ -512,7 +512,7 @@ body {
 .btn-close-notes:hover { background: var(--purple-light); transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
 .btn-close-notes:focus-visible { outline: 3px solid var(--purple); outline-offset: -9px; }
 
-/* ── Download findings button ──────────────────────────────────────────── */
+/* ── Download notes button ─────────────────────────────────────────────── */
 .btn-download {
   font-size: 1rem; font-family: var(--font-body); font-weight: 700;
   background: var(--surface); color: var(--text);
@@ -623,7 +623,7 @@ body {
         </div>
         <button class="btn-download" id="btn-download" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Findings
+          Download Notes
         </button>
         <button class="btn-reset" id="btn-reset" type="button">Reset Checklist</button>
       </div>
@@ -1108,7 +1108,7 @@ function attachEvents() {
 
   // Reset
   document.getElementById('btn-reset').addEventListener('click', openModal);
-  document.getElementById('btn-download').addEventListener('click', downloadFindings);
+  document.getElementById('btn-download').addEventListener('click', downloadNotes);
   document.getElementById('btn-cancel').addEventListener('click', closeModal);
   document.getElementById('btn-confirm').addEventListener('click', () => { resetChecklist(); closeModal(); });
   document.getElementById('modal').addEventListener('click', e => {
@@ -1154,12 +1154,12 @@ function renderNotesList(id) {
   }
 }
 
-/* ── Download findings ─────────────────────────────────────────────────── */
-function downloadFindings() {
+/* ── Download notes ────────────────────────────────────────────────────── */
+function downloadNotes() {
   const entries = Object.entries(state.notes).filter(([, notes]) => notes && notes.length > 0);
 
   if (entries.length === 0) {
-    alert('No findings have been added yet. Use the "Add Notes" button on any criterion to record a finding.');
+    alert('No notes have been added yet. Use the "Add Notes" button on any criterion to add a note.');
     return;
   }
 
@@ -1167,8 +1167,8 @@ function downloadFindings() {
   for (const c of CRITERIA) criteriaMap[c.id] = c;
 
   const lines = [
-    'WCAG 2.2 Audit Findings',
-    '=======================',
+    'WCAG 2.2 Audit Notes',
+    '====================',
     `Generated: ${new Date().toLocaleString()}`,
     `Grouped by: ${state.groupMode === 'level' ? 'WCAG Level' : 'WCAG Principle / SC'}`,
     ''
@@ -1189,7 +1189,7 @@ function downloadFindings() {
         lines.push(`
 SC ${c.id} – ${c.name}`);
         (state.notes[c.id] || []).forEach((note, i) => {
-          lines.push(`  Finding ${i + 1}: ${note}`);
+          lines.push(`  Note ${i + 1}: ${note}`);
         });
       });
 
@@ -1217,7 +1217,7 @@ SC ${c.id} – ${c.name}`);
 SC ${id} – ${c.name} (Level ${c.level})`);
 
         notes.forEach((note, i) => {
-          lines.push(`  Finding ${i + 1}: ${note}`);
+          lines.push(`  Note ${i + 1}: ${note}`);
         });
       }
 
@@ -1230,7 +1230,7 @@ SC ${id} – ${c.name} (Level ${c.level})`);
   const a = document.createElement('a');
 
   a.href = url;
-  a.download = `wcag-findings-${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = `wcag-notes-${new Date().toISOString().slice(0,10)}.txt`;
 
   document.body.appendChild(a);
   a.click();
